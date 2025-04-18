@@ -1,0 +1,50 @@
+name: Build and Upload CRX
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_crx:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 检出代码
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 设置 Node.js 环境
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    # 安装依赖
+    - name: Install dependencies
+      run: npm install
+
+    # 使用私钥生成 CRX 文件并动态命名
+    - name: Build CRX file
+      env:
+        PEM_SECRET: ${{ secrets.PEM_SECRET }}
+      run: |
+        openssl base64 -d -out private.pem <<< "$PEM_SECRET"
+        REPO_NAME=$(basename $(git rev-parse --show-toplevel))
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        OUTPUT_FILE="${REPO_NAME}_${COMMIT_HASH}.crx"
+        npm run build -- --pem private.pem --src ./src --output "./$OUTPUT_FILE"
+
+    # 合并 /utilities 中的文件与生成的 CRX 文件
+    - name: Merge utilities and CRX
+      run: |
+        mkdir -p publish
+        cp *.crx publish/
+        cp -r utilities/* publish/
+
+    # 上传工件并动态命名
+    - name: Upload publish folder
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.repository_name }}_${{ github.sha }}
+        path: publish/
