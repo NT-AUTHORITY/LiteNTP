@@ -14,28 +14,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 设置 Node.js 环境
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
-
-    # 安装依赖 (在 /src 目录中运行)
-    - name: Install dependencies
-      working-directory: ./src
-      run: npm install
-
-    # 使用私钥生成 CRX 文件并动态命名 (仍在 /src 目录中)
+    # 使用私钥生成 CRX 文件
     - name: Build CRX file
       env:
         PEM_SECRET: ${{ secrets.PEM_SECRET }}
-      working-directory: ./src
       run: |
         openssl base64 -d -out private.pem <<< "$PEM_SECRET"
         REPO_NAME=$(basename $(git rev-parse --show-toplevel))
         COMMIT_HASH=$(git rev-parse --short HEAD)
         OUTPUT_FILE="${REPO_NAME}_${COMMIT_HASH}.crx"
-        npm run build -- --pem private.pem --src ./ --output "../$OUTPUT_FILE"
+        # 假设 manifest.json 在 src 目录中
+        zip -r "$OUTPUT_FILE" ./src ./src/manifest.json
 
     # 合并 /utilities 中的文件与生成的 CRX 文件
     - name: Merge utilities and CRX
