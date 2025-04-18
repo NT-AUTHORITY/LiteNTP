@@ -14,6 +14,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # 获取短提交哈希
+    - name: Get Short Commit Hash
+      id: vars
+      run: echo "SHORT_COMMIT=$(git rev-parse --short=6 HEAD)" >> $GITHUB_ENV
+
     # 使用私钥生成 CRX 文件
     - name: Build CRX file
       env:
@@ -21,7 +26,6 @@ jobs:
       run: |
         openssl base64 -d -out private.pem <<< "$PEM_SECRET"
         REPO_NAME="LiteNTP" # 手动设置仓库名，避免获取错误
-        SHORT_COMMIT=$(git rev-parse --short=6 HEAD) # 获取提交哈希的前6位
         OUTPUT_FILE="${REPO_NAME}_${SHORT_COMMIT}.crx"
         zip -r "$OUTPUT_FILE" ./src ./src/manifest.json
 
@@ -36,5 +40,5 @@ jobs:
     - name: Upload publish folder
       uses: actions/upload-artifact@v4
       with:
-        name: LiteNTP_${{ github.sha::6 }} # 提交哈希的前6位动态命名工件
+        name: LiteNTP_${{ env.SHORT_COMMIT }}
         path: publish/
