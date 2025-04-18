@@ -20,22 +20,21 @@ jobs:
         PEM_SECRET: ${{ secrets.PEM_SECRET }}
       run: |
         openssl base64 -d -out private.pem <<< "$PEM_SECRET"
-        REPO_NAME=$(basename $(git rev-parse --show-toplevel))
-        COMMIT_HASH=$(git rev-parse --short HEAD)
-        OUTPUT_FILE="${REPO_NAME}_${COMMIT_HASH}.crx"
-        # 假设 manifest.json 在 src 目录中
+        REPO_NAME="LiteNTP" # 手动设置仓库名，避免获取错误
+        SHORT_COMMIT=$(git rev-parse --short=6 HEAD) # 获取提交哈希的前6位
+        OUTPUT_FILE="${REPO_NAME}_${SHORT_COMMIT}.crx"
         zip -r "$OUTPUT_FILE" ./src ./src/manifest.json
 
     # 合并 /utilities 中的文件与生成的 CRX 文件
     - name: Merge utilities and CRX
       run: |
         mkdir -p publish
-        cp *.crx publish/
+        cp LiteNTP_*.crx publish/
         cp -r utilities/* publish/
 
     # 上传工件并动态命名
     - name: Upload publish folder
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.repository_name }}_${{ github.sha }}
+        name: LiteNTP_${{ github.sha::6 }} # 提交哈希的前6位动态命名工件
         path: publish/
