@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新标签页</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="clock">
+            <div id="time">00:00</div>
+            <div id="date">2024年1月1日</div>
+        </div>
+        <div class="search-box">
+            <div class="search-container">
+                <div class="search-engine-selector">
+                    <img src="icons/search-engines/google.svg" alt="Google" data-engine="google" class="search-engine-icon active">
+                    <img src="icons/search-engines/bing.svg" alt="Bing" data-engine="bing" class="search-engine-icon">
+                    <img src="icons/search-engines/duckduckgo.svg" alt="DuckDuckGo" data-engine="duckduckgo" class="search-engine-icon">
+                </div>
+                <input type="text" id="search" placeholder="搜索..." autocomplete="off">
+                <div class="suggestions-container"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
