@@ -12,6 +12,10 @@
  7. Drag the `LiteNTP_??????.crx` file to the browser tab.
  8. Enable it.
  9. If you see something like this  
-    ![Image](https://github.com/user-attachments/assets/45b4842b-02bc-4476-a394-6606f8e790fb),  
-    navigate to `chrome://policy` and select `Reload all policies`.
-    ![image](https://github.com/user-attachments/assets/581a4c11-eb8e-424c-85d9-cd510ecc0718)
+    ```
+    This extension is not listed in the Chrome Web Store and may have been added without your knowledge. Learn more
+    ```  
+    ![This extension is not listed in the Chrome Web Store and may have been added without your knowledge.](https://github.com/user-attachments/assets/c8d43879-ce02-4069-b618-7029dd197b73)  
+    navigate to `chrome://policy` and select `Reload Policies`.  
+    ![Reload Policies](https://github.com/user-attachments/assets/cd5977e1-64d8-42a9-b828-8fe62d2cea3a)
+    
